@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="assets/icons/favicon.png">
+<title>404 | 目标区域不存在 · HAAVK</title>
+<style>
+  :root{
+    --navy:#0e1f33;
+    --ink:#1a1a1a;
+    --gray:#6b7280;
+    --line:#e6e8eb;
+    --blue-accent:#2f6fb3;
+    --warn:#c9453a;
+    --mono:"SF Mono","JetBrains Mono","Roboto Mono",Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:#fff;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  img{
+    max-width:100%;
+    display:block;
+    -webkit-user-drag:none;
+    user-drag:none;
+    -khtml-user-drag:none;
+    -moz-user-drag:none;
+    -o-user-drag:none;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ---------- Header（保留 Logo 与注意力点数） ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 24px;
+    width:100%;
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:20;
+    background:transparent;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-left:28px;
+  }
+  .logo-img{
+    height:36px;
+    width:auto;
+  }
+  .attention{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    color:#333;
+    white-space:nowrap;
+    margin-right:28px;
+  }
+  .attention svg{width:18px; height:18px;}
+  .attention .divider{ color:var(--line); margin:0 2px; }
+  .attention .num{ font-weight:600; color:var(--navy); }
+
+  /* ---------- 404 主区 ---------- */
+  main.page{
+    position:relative;
+    flex:1;
+    width:100%;
+    padding:150px 48px 100px;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(47,111,179,.05), transparent 60%),
+      repeating-linear-gradient(100deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 10px);
+  }
+  .err-wrap{
+    max-width:760px;
+    margin:0 auto;
+  }
+
+  /* 大号 404 */
+  .err-code{
+    font-family:var(--mono);
+    font-size:clamp(110px, 15vw, 200px);
+    font-weight:800;
+    line-height:.88;
+    letter-spacing:-.04em;
+    color:rgba(47,111,179,.07);
+    -webkit-text-stroke:2px rgba(47,111,179,.55);
+    user-select:none;
+    opacity:0;
+    animation:fadeUp .8s .05s ease forwards;
+  }
+  .err-tag{
+    margin-top:12px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:5px;
+    color:#4b6f96;
+    text-transform:uppercase;
+    opacity:0;
+    animation:fadeUp .8s .15s ease forwards;
+  }
+
+  h1{
+    margin-top:30px;
+    font-size:clamp(26px, 3vw, 42px);
+    font-weight:700;
+    letter-spacing:3px;
+    line-height:1.35;
+    color:#111;
+    opacity:0;
+    animation:fadeUp .8s .25s ease forwards;
+  }
+
+  .err-desc{
+    margin-top:18px;
+    max-width:560px;
+    padding-left:16px;
+    border-left:3px solid var(--blue-accent);
+    font-size:15px;
+    line-height:1.95;
+    color:var(--gray);
+    opacity:0;
+    animation:fadeUp .8s .35s ease forwards;
+  }
+  .err-desc b{ color:#2b3138; font-weight:600; }
+
+  /* 系统日志 */
+  .log{
+    margin-top:38px;
+    width:100%;
+    max-width:640px;
+    border:1px solid var(--line);
+    background:#fafbfc;
+    opacity:0;
+    animation:fadeUp .8s .45s ease forwards;
+  }
+  .log-line{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:24px;
+    padding:13px 20px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12.5px;
+  }
+  .log-line:last-child{ border-bottom:0; }
+  .log-line span{ color:#9aa1a8; letter-spacing:1px; white-space:nowrap; }
+  .log-line b{ font-weight:500; color:#2b3138; text-align:right; word-break:break-all; }
+  .log-line b.warn{ color:var(--warn); }
+
+  /* 按钮 */
+  .actions{
+    margin-top:36px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    opacity:0;
+    animation:fadeUp .8s .55s ease forwards;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 32px;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:2px;
+    color:#fff;
+    background:var(--blue-accent);
+    border:1px solid var(--blue-accent);
+    transition:background .2s, box-shadow .2s, border-color .2s, color .2s;
+  }
+  .btn::after{
+    content:"→";
+    font-family:var(--mono);
+    font-weight:400;
+    transition:transform .2s;
+  }
+  .btn:hover{
+    background:#245a94;
+    border-color:#245a94;
+    box-shadow:0 6px 20px rgba(47,111,179,.28);
+  }
+  .btn:hover::after{ transform:translateX(4px); }
+  .btn.ghost{
+    background:transparent;
+    border-color:#ccd2d9;
+    color:#5c6672;
+  }
+  .btn.ghost:hover{
+    background:#f3f5f7;
+    border-color:#b7bec7;
+    color:#2b3138;
+    box-shadow:none;
+  }
+
+  /* ---------- 底部深色条 ---------- */
+  .content-wrap{
+    width:100%;
+    background:#121214;
+  }
+  .foot-inner{
+    max-width:1440px;
+    margin:0 auto;
+    padding:26px 48px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:1.4px;
+    color:#5c6672;
+  }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  @media (max-width:1000px){
+    header{ padding:18px 24px; }
+    .logo{ margin-left:0; }
+    .attention{ margin-right:0; }
+    main.page{ padding:130px 24px 70px; }
+    .err-code{ -webkit-text-stroke-width:1.5px; }
+    h1{ letter-spacing:2px; }
+    .err-desc{ font-size:14px; padding-left:14px; }
+    .log-line{ font-size:11.5px; padding:11px 14px; gap:14px; }
+    .btn{ padding:12px 24px; font-size:13px; letter-spacing:1px; }
+    .foot-inner{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:6px;
+      padding:20px 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img draggable="false" src="assets/img/haavk-logo.png" alt="HAAVK" class="logo-img">
+  </div>
+  <div class="attention">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2 L21 8 L21 16 L12 22 L3 16 L3 8 Z" stroke="#0e1f33" stroke-width="1.4"/>
+    </svg>
+    <span>注意力点数</span>
+    <span class="divider">|</span>
+    <span class="num">137</span>
+  </div>
+</header>
+
+<main class="page">
+  <div class="err-wrap">
+    <div class="err-code">404</div>
+    <div class="err-tag">Error 404 // Target Not Found</div>
+
+    <h1>目标区域不存在</h1>
+
+    <p class="err-desc">
+      你请求的资源已被移除、转移，或从未被分配。<br>
+      <b>哈夫克不为无效路径保留位置。</b>请返回指定区域，继续执行任务。
+    </p>
+
+    <div class="log">
+      <div class="log-line"><span>请求路径</span><b id="reqPath">/</b></div>
+      <div class="log-line"><span>会话状态</span><b class="warn">已标记为异常变量</b></div>
+      <div class="log-line"><span>注意力点数</span><b>137</b></div>
+      <div class="log-line"><span>处理建议</span><b>返回指定区域</b></div>
+    </div>
+
+    <div class="actions">
+      <a class="btn" href="/">返回首页</a>
+      <a class="btn ghost" href="javascript:history.back()">返回上一页</a>
+    </div>
+  </div>
+</main>
+
+<div class="content-wrap">
+  <div class="foot-inner">
+    <span>HAAVK · 效率，铸就未来</span>
+    <span>CN UID:181695541760255927940 | 202609260757</span>
+  </div>
+</div>
+
+<script>
+  // 显示实际访问的路径
+  (function () {
+    var p = location.pathname + location.search + location.hash;
+    document.getElementById('reqPath').textContent = (p && p !== '') ? p : '/';
+  })();
+
+  // 控制台安全警告（与主站一致）
+  (function () {
+    const title = 'background:#0e1f33;color:#fff;font-size:22px;font-weight:900;padding:10px 18px;border-radius:2px;';
+    const warn  = 'color:#ff3b30;font-size:18px;font-weight:700;';
+    const body  = 'color:#e6e7ea;font-size:13px;line-height:1.8;background:#121214;padding:12px 16px;border-left:4px solid #2f6fb3;';
+    const slogan = 'color:#2f6fb3;font-size:15px;font-weight:700;';
+
+    console.log('%cHAAVK 安全协议已激活', title);
+    console.log('%c警告：检测到未授权的调试访问。', warn);
+    console.log(
+      '%c你正在访问哈夫克集团内部系统。\n' +
+      '此区域仅限授权人员。所有控制台操作、网络请求与脚本变更均被记录。\n' +
+      '任何试图篡改、注入或绕过安全协议的行为，都将被视为对效率的敌意。\n\n' +
+      '违规后果：\n' +
+      '  · 会话标记为异常变量\n' +
+      '  · 注意力点数扣除\n' +
+      '  · 移交安保部门处理\n\n' +
+      '理解的要执行，不理解的也要执行。',
+      body
+    );
+    console.log('%c效率，铸就未来。', slogan);
+  })();
+</script>
+<script src="/assets/js/music-player.js?v=4" defer></script>
+</body>
+</html>

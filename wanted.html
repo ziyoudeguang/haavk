@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" id="viewportMeta" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="assets/icons/favicon.png">
+<title>寻人启事 | HAAVK</title>
+<meta name="description" content="HAAVK 哈夫克集团寻人启事，为保障集团员工与阿萨拉地区居民安全，对部分失联人员持续加以特别关注(玩家自制仅供娱乐)">
+<style>
+  :root{
+    --navy:#0e1f33;
+    --ink:#1a1a1a;
+    --gray:#6b7280;
+    --line:#e6e8eb;
+    --blue-accent:#2f6fb3;
+    --btn-blue:#2b62b5;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:#fff;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{
+    max-width:100%;
+    display:block;
+    -webkit-user-drag:none;
+    user-select:none;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ---------- 横屏提示浮层（与 index 一致） ---------- */
+  .rotate-hint{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:rgba(14,31,51,.92);
+    color:#fff;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:14px;
+    text-align:center;
+    padding:24px;
+  }
+  .rotate-hint .rotate-icon{
+    width:56px; height:56px;
+    animation:rotate-phone 1.6s ease-in-out infinite;
+  }
+  .rotate-hint p{
+    font-size:15px;
+    line-height:1.7;
+    max-width:280px;
+  }
+  .rotate-hint .rotate-close{
+    margin-top:6px;
+    font-size:13px;
+    color:#9fb3c8;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:999px;
+    padding:6px 18px;
+    background:transparent;
+  }
+  @keyframes rotate-phone{
+    0%, 15%{ transform:rotate(0deg); }
+    50%, 65%{ transform:rotate(-90deg); }
+    100%{ transform:rotate(-90deg); }
+  }
+  @media (orientation:portrait){
+    .rotate-hint.enabled{ display:flex; }
+  }
+  @media (orientation:landscape){
+    .rotate-hint{ display:none !important; }
+  }
+
+  /* ---------- 页面背景：沿用 index 首屏的浅色纹理 ---------- */
+  .page{
+    min-height:100vh;
+    padding-top:110px; /* 与 index 首屏一致：头部绝对定位、透明，内容整体下移 */
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(47,111,179,.05), transparent 60%),
+      repeating-linear-gradient(100deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 10px);
+  }
+
+  /* ---------- 顶部导航（与 index 完全一致） ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 24px;
+    width:100%;
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:20;
+    background:transparent;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-left:28px;
+  }
+  .logo-img{
+    height:36px;
+    width:auto;
+  }
+  nav{
+    display:flex;
+    gap:120px;
+    font-size:15px;
+    font-weight:600;
+    color:#333;
+    margin-right:160px;
+  }
+  nav a{
+    padding-bottom:4px;
+    transition:color .15s;
+  }
+  nav a:hover{ color:var(--blue-accent); }
+  nav a.active{ color:var(--blue-accent); }
+  .attention{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    color:#333;
+    white-space:nowrap;
+    margin-right:28px;
+  }
+  .attention svg{width:18px; height:18px;}
+  .attention .divider{ color:var(--line); margin:0 2px; }
+  .attention .num{ font-weight:600; color:var(--navy); }
+
+  /* ---------- 主体（版心与 index 一致：1440 / 左右 48） ---------- */
+  .wanted-wrap{
+    max-width:1440px;
+    margin:0 auto;
+    padding:0 48px 64px;
+    display:flex;
+    gap:32px;
+    align-items:flex-start;
+  }
+  .wanted-intro{
+    flex:0 0 290px;
+    padding:20px 20px 24px;
+    background:rgba(255,255,255,.7);
+    border:1px solid var(--line);
+    border-radius:4px;
+  }
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:16px;
+    font-weight:600;
+    color:var(--ink);
+    padding-bottom:12px;
+    margin-bottom:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-title::before{
+    content:"";
+    width:3px;
+    height:14px;
+    background:var(--blue-accent);
+    display:inline-block;
+    border-radius:2px;
+  }
+  .wanted-intro p{
+    font-size:13.5px;
+    line-height:1.85;
+    color:#4a5160;
+    text-align:justify;
+  }
+  .wanted-intro p.gap{ margin-top:16px; }
+
+  .wanted-grid{
+    flex:1;
+    min-width:0;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:24px;
+  }
+
+  /* ---------- 卡片 ---------- */
+  .wanted-card{
+    container-type:inline-size;
+    display:flex;
+    flex-direction:column;
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .wanted-tags{
+    display:flex; align-items:center; justify-content:center; gap:4.4cqw;
+    height:12.3cqw;
+    font-size:3.3cqw;
+    font-weight:600;
+    color:#fff;
+    letter-spacing:.08em;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 .5cqw, transparent .5cqw 1.6cqw),
+      linear-gradient(90deg,#122a45,#1b3352 55%,#14304d);
+  }
+  .wanted-body{
+    position:relative;
+    overflow:hidden;
+    aspect-ratio:520 / 565;
+    background:#3f74bd;
+    color:#fff;
+  }
+  /* 人物图：等比例铺满、不拉伸；用 --pos 调整取景位置 */
+  .wanted-body .photo{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    max-width:none;
+    object-fit:cover;
+    object-position:var(--pos, 85%) center;
+    filter:saturate(.9) brightness(.95);
+  }
+  .wanted-body .photo.right{
+    inset:auto;
+    top:0; right:-6%;
+    width:auto; height:108%;
+    object-fit:contain;
+  }
+  .wanted-body .shade{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(90deg, #3f78c4 0%, rgba(63,120,196,.94) 20%, rgba(63,120,196,.6) 44%, rgba(63,120,196,0) 72%),
+      linear-gradient(0deg, rgba(18,38,78,.55) 0%, rgba(18,38,78,0) 42%),
+      rgba(58,108,190,.16);
+  }
+  .wanted-body .t-name,
+  .wanted-body .t-desc,
+  .wanted-body .t-label,
+  .wanted-body .t-value{
+    position:absolute; left:4.4cqw; white-space:nowrap;
+    text-shadow:0 .3cqw 1.6cqw rgba(10,25,55,.35);
+  }
+  .t-name{ top:9.6cqw; font-size:9.6cqw; font-weight:800; line-height:1.1; letter-spacing:.02em; }
+  .t-desc{ top:22.6cqw; font-size:3.4cqw; font-weight:500; color:#eaf1fb; }
+  .t-label{ top:66.5cqw; font-size:3.9cqw; font-weight:600; color:#f1f5fb; }
+  .t-value{ top:72.5cqw; font-size:9cqw; font-weight:800; line-height:1.15; letter-spacing:.02em; }
+  .t-value.num{ font-size:9.4cqw; font-variant-numeric:tabular-nums; }
+
+  .wanted-btn{
+    position:absolute;
+    left:4.23%; width:59.9%;
+    bottom:5.13%; height:10.1%;
+    display:flex; align-items:center; justify-content:center; gap:2.3cqw;
+    background:#f5fbff;
+    border-left:.6cqw solid #74bce2;
+    border-right:.6cqw solid #6ab8e2;
+    color:var(--btn-blue);
+    font-size:3.85cqw;
+    font-weight:700;
+    letter-spacing:.1cqw;
+    cursor:pointer;
+    user-select:none;
+    transition:filter .15s;
+  }
+  .wanted-btn:hover{ filter:brightness(.96); }
+  .wanted-btn svg{ width:4.6cqw; height:4.6cqw; flex:none; }
+  /* 已提交状态 */
+  .wanted-btn.done{
+    background:rgba(20,45,85,.62);
+    border-left-color:transparent;
+    border-right-color:transparent;
+    color:rgba(255,255,255,.5);
+    cursor:default;
+  }
+  .wanted-btn.done:hover{ filter:none; }
+  .wanted-btn.done{ pointer-events:none; }
+  .wanted-btn.done svg{ display:none; }
+
+
+  /* ---------- Footer（与 index 一致） ---------- */
+  .site-footer{
+    width:100%;
+    background:#0c0d0f;
+    color:#8a8d93;
+    text-align:center;
+    padding:28px 24px 32px;
+    font-size:12px;
+    line-height:1.9;
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  .site-footer p{ margin:0 0 6px; }
+  .site-footer p:last-child{ margin-bottom:0; color:#b9c3d6; font-weight:600; }
+  .site-footer a{ color:#5a9bdc; text-decoration:underline; }
+  .site-footer a:hover{ color:#7fb4ea; }
+
+  @media (max-width:1000px){
+    nav{ gap:28px; font-size:13px; }
+    header{ flex-wrap:wrap; gap:12px; padding:18px 24px; }
+    nav{ order:3; width:100%; justify-content:space-between; margin-right:0; }
+    .wanted-wrap{ flex-direction:column; padding:24px; gap:24px; }
+    .wanted-intro{ flex:none; width:100%; }
+    .wanted-grid{ grid-template-columns:1fr; width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="rotate-hint" id="rotateHint">
+  <svg class="rotate-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="2" width="12" height="20" rx="2" stroke="#fff" stroke-width="1.6"/>
+    <circle cx="12" cy="18.3" r="0.9" fill="#fff"/>
+  </svg>
+  <p>将手机横过来观看，体验效果最佳<br>建议旋转屏幕以获得完整界面效果</p>
+  <button type="button" class="rotate-close" id="rotateHintClose">暂不旋转，继续浏览</button>
+</div>
+
+<header>
+  <a class="logo" href="index.html">
+    <img draggable="false" src="assets/img/haavk-logo.png" alt="HAAVK" class="logo-img">
+  </a>
+  <nav>
+    <a href="index.html">关于我们</a>
+    <a href="#">员工论坛</a>
+    <a href="solutions.html">解决方案</a>
+    <a href="wanted.html" class="active">寻人启事</a>
+  </nav>
+  <div class="attention">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2 L21 8 L21 16 L12 22 L3 16 L3 8 Z" stroke="#0e1f33" stroke-width="1.4"/>
+    </svg>
+    <span>注意力点数</span>
+    <span class="divider">|</span>
+    <span class="num">137</span>
+  </div>
+</header>
+
+<div class="page">
+<main class="wanted-wrap">
+
+  <div class="wanted-intro">
+    <div class="section-title">寻人启事</div>
+    <p>为保障集团员工与阿萨拉地区居民安全，哈夫克集团对部分失联人员持续加以特别关注。<br>集团员工或社会人士如能提供这些失联人士的有效信息，集团会发放合理的奖励。</p>
+    <p class="gap">我们相信，每一位失联人员都有回家的权利。让我们一起献出爱心，伸出援手，帮他们早日回家。</p>
+    <p class="gap">哈夫克集团保留对“回家”的全部解释权。</p>
+  </div>
+
+  <div class="wanted-grid">
+
+    <div class="wanted-card">
+      <div class="wanted-tags"><span>不善言语</span><span>神出鬼没</span></div>
+      <div class="wanted-body">
+        <img class="photo" draggable="false" src="assets/img/wanted-h42.jpg" alt="H42" style="--pos:85%">
+        <div class="shade"></div>
+        <div class="t-name">H42</div>
+        <div class="t-desc">需返回集团接受脑机康复训练</div>
+        <div class="t-label">悬赏哈夫币总额</div>
+        <div class="t-value num">999,999,999</div>
+        <div class="wanted-btn" role="button" tabindex="0" data-name="H42"><span class="btn-text">提交线索</span></div>
+      </div>
+    </div>
+
+    <div class="wanted-card">
+      <div class="wanted-tags"><span>精瘦结实</span><span>暴躁冲动</span></div>
+      <div class="wanted-body">
+        <img class="photo right" draggable="false" src="assets/img/wanted-zoya.jpg" alt="佐娅">
+        <div class="shade"></div>
+        <div class="t-name">佐娅</div>
+        <div class="t-desc">亟需集团帮助继续其科研工作</div>
+        <div class="t-label">举报奖励</div>
+        <div class="t-value">脑机实验受试资格</div>
+        <div class="wanted-btn" role="button" tabindex="0" data-name="佐娅">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.6 L22.4 21 H1.6 Z" fill="#e5504f" stroke="#e5504f" stroke-width="1.6" stroke-linejoin="round"/>
+            <rect x="11" y="8.6" width="2" height="6.4" rx=".6" fill="#fff"/>
+            <circle cx="12" cy="17.8" r="1.15" fill="#fff"/>
+          </svg>
+          <span class="btn-text">提交线索</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+</div>
+
+<footer class="site-footer">
+  <p>本网站是三角洲玩家（我）自制的HAAVK网站，并非《三角洲行动》游戏官方制作的彩蛋网页，其原型是三角洲二周年活动：骇爪的网上冲浪，《三角洲行动》游戏官网：<a href="https://df.qq.com/cp/a20240906main/index.html" target="_blank" rel="noopener">《三角洲行动》全新「群星赛季」正式开启，超多洲年庆福利正在路上！---新一代战术射击-腾讯游戏</a></p>
+  <p>本网站是为爱发电，目前还没有建造完，我的Github个人链接：<a href="https://github.com/ziyoudeguang" target="_blank" rel="noopener">ziyoudeguang</a>。您的支持是我建造的动力</p>
+  <p>如有侵权等任何问题，请联系我：<a href="mailto:2533765959@qq.com">2533765959@qq.com</a>，QQ：2533765959，本网站无任何盈利性质</p>
+  <p>电脑访问效果最佳，<a href="javascript:void(0)" id="desktopPreviewBtn" onclick="toggleDesktopView()">点击查看电脑界面效果</a></p>
+  <p>哈夫克集团祝《三角洲行动》二周年快乐！效率两年，行动不止；未来，仍由我们铸就。</p>
+</footer>
+
+<script>
+  // ---------- 提交线索：提交后按钮变灰并锁定，用浏览器弹窗通知 ----------
+  (function () {
+    const KEY = 'haavk_clue_submitted';
+    let submitted = [];
+    try { submitted = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+
+    function lock(btn) {
+      btn.classList.add('done');
+      btn.setAttribute('aria-disabled', 'true');
+      btn.removeAttribute('tabindex');
+      btn.querySelector('.btn-text').textContent = '已提交';
+    }
+
+    document.querySelectorAll('.wanted-btn').forEach(function (btn) {
+      const name = btn.dataset.name;
+      if (submitted.indexOf(name) !== -1) { lock(btn); return; }
+
+      function submit() {
+        if (btn.classList.contains('done')) return;
+        lock(btn);
+        submitted.push(name);
+        try { localStorage.setItem(KEY, JSON.stringify(submitted)); } catch (e) {}
+        // 等按钮变灰渲染完成后再弹出浏览器通知
+        requestAnimationFrame(function () {
+          setTimeout(function () {
+            alert(
+              '【哈夫克集团 · 线索受理中心】\n\n' +
+              '感谢您对集团工作的配合。\n' +
+              '关于「' + name + '」的线索已录入集团档案，核实无误后，将按规定发放合理奖励与注意力点数。\n\n' +
+              '请保持通讯畅通，等待集团联系。\n' +
+              '家一直都在，每一位失联人员，终将回家。\n\n' +
+              '效率，铸就未来。'
+            );
+          }, 30);
+        });
+      }
+
+      btn.addEventListener('click', submit);
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); submit(); }
+      });
+    });
+  })();
+</script>
+
+<script>
+  // ---------- 移动端"电脑界面"效果：横屏时自动触发，也可手动点击切换 ----------
+  const desktopPreviewBtn = document.getElementById('desktopPreviewBtn');
+  const DESKTOP_WIDTH = 1440;
+  const isTouchDevice = window.matchMedia('(max-width: 1000px)').matches
+    || ('ontouchstart' in window);
+  let isDesktopPreview = false;
+
+  function setViewport(content) {
+    const old = document.getElementById('viewportMeta');
+    if (old) old.parentNode.removeChild(old);
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.id = 'viewportMeta';
+    meta.content = content;
+    document.head.appendChild(meta);
+  }
+
+  function applyDesktopView() {
+    isDesktopPreview = true;
+    setViewport('width=' + DESKTOP_WIDTH);
+    if (desktopPreviewBtn) desktopPreviewBtn.textContent = '点击恢复手机界面效果';
+  }
+
+  function applyMobileView() {
+    isDesktopPreview = false;
+    setViewport('width=device-width, initial-scale=1');
+    if (desktopPreviewBtn) desktopPreviewBtn.textContent = '点击查看电脑界面效果';
+  }
+
+  window.toggleDesktopView = function () {
+    if (isDesktopPreview) applyMobileView();
+    else applyDesktopView();
+  };
+
+  if (isTouchDevice) {
+    const landscapeQuery = window.matchMedia('(orientation: landscape)');
+    const syncWithOrientation = (matchesLandscape) => {
+      if (matchesLandscape) applyDesktopView();
+      else applyMobileView();
+    };
+    syncWithOrientation(landscapeQuery.matches);
+    landscapeQuery.addEventListener('change', (e) => syncWithOrientation(e.matches));
+  }
+
+  // ---------- 移动端横屏提示 ----------
+  (function () {
+    const rotateHint = document.getElementById('rotateHint');
+    const rotateHintClose = document.getElementById('rotateHintClose');
+    const dismissed = sessionStorage.getItem('rotateHintDismissed') === '1';
+
+    if (isTouchDevice && !dismissed) {
+      rotateHint.classList.add('enabled');
+    }
+
+    rotateHintClose.addEventListener('click', function () {
+      rotateHint.classList.remove('enabled');
+      sessionStorage.setItem('rotateHintDismissed', '1');
+    });
+  })();
+
+  // 禁止拖拽图片资源
+  document.addEventListener('dragstart', function(e){
+    if (e.target && e.target.tagName === 'IMG') {
+      e.preventDefault();
+    }
+  });
+</script>
+
+<script>
+(function () {
+  const title = 'background:#0e1f33;color:#fff;font-size:22px;font-weight:900;padding:10px 18px;border-radius:2px;';
+  const warn  = 'color:#ff3b30;font-size:18px;font-weight:700;';
+  const body  = 'color:#e6e7ea;font-size:13px;line-height:1.8;background:#121214;padding:12px 16px;border-left:4px solid #2f6fb3;';
+  const slogan = 'color:#2f6fb3;font-size:15px;font-weight:700;';
+
+  console.log('%cHAAVK 安全协议已激活', title);
+  console.log('%c警告：您正在查看失联人员档案。', warn);
+  console.log(
+    '%c本页面记录了部分未按时返回的编号与资产状态。\n' +
+    '档案内容属集团内部资料，请勿在非授权范围内传播。\n' +
+    '提供有效线索者，将获得注意力点数与相应奖励。\n\n' +
+    '若你恰好认识档案中的某一位——\n' +
+    '请转告他们：家一直都在。\n\n' +
+    '哈夫克集团保留对"回家"与"失联"的全部解释权。',
+    body
+  );
+  console.log('%c效率，铸就未来。', slogan);
+})();
+</script>
+
+<script src="/assets/js/music-player.js?v=4" defer></script>
+</body>
+</html>
