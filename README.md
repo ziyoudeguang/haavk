@@ -6,6 +6,11 @@
 
 🌐 在线预览：<https://haavk.ziyoudeguang.cn>
 
+网站首页：
+
+<img width="1920" height="926" alt="QQ_1792317758125" src="https://github.com/user-attachments/assets/1d37fc07-004b-4caf-a45d-6289e55c2889" />
+
+
 ---
 
 ## ⚠️ 声明
